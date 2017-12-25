@@ -1,4 +1,5 @@
+import * as salesSchema from './sales';
 
-export default [
-
-];
+export const localSchemas = [
+	salesSchema
+]

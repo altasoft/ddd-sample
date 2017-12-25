@@ -1,23 +1,27 @@
 {
-  "name": "ddd-sample",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/altasoft/ddd-sample.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/altasoft/ddd-sample/issues"
-  },
-  "homepage": "https://github.com/altasoft/ddd-sample#readme",
-  "dependencies": {
-    "@jokio/datastore": "^0.2.1",
-    "@jokio/graphql": "^0.1.9"
-  }
+	"name": "ddd-sample",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/altasoft/ddd-sample.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/altasoft/ddd-sample/issues"
+	},
+	"homepage": "https://github.com/altasoft/ddd-sample#readme",
+	"dependencies": {
+		"@jokio/datastore": "0.2.6",
+		"@jokio/graphql": "0.1.9"
+	},
+	"devDependencies": {
+		"@types/google-cloud__datastore": "^1.1.1"
+	}
 }
