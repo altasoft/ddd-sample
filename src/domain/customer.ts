@@ -47,7 +47,7 @@ export class CustomerAggregate extends Aggregate<CustomerState> {
 				break;
 
 			case 'remove':
-				this.state.accountsCount++;
+				this.state.accountsCount--;
 				break;
 		}
 
