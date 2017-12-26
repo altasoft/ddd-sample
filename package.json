@@ -4,7 +4,10 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"start": "node dist",
+		"build": "tsc",
 		"dev": "nodemon",
+		"deploy": "now -p && now alias",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
@@ -19,9 +22,10 @@
 	"homepage": "https://github.com/altasoft/ddd-sample#readme",
 	"dependencies": {
 		"@jokio/datastore": "0.2.6",
-		"@jokio/graphql": "0.1.9"
+		"@jokio/graphql": "0.2.1"
 	},
 	"devDependencies": {
-		"@types/google-cloud__datastore": "^1.1.1"
+		"@types/google-cloud__datastore": "^1.1.1",
+		"typescript": "2.6.2"
 	}
 }

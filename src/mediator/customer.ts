@@ -1,10 +1,10 @@
-import { CustomerAggregate } from "../domain";
+import { CustomerAggregateRoot } from "../domain";
 
 
-CustomerAggregate.Events.Registered.attachAsync(async x => {
+CustomerAggregateRoot.Events.Registered.attachAsync(async x => {
 	console.log('CustomerAggr', 'Registered', x.data);
 })
 
-CustomerAggregate.Events.AccountsCountUpdated.attachAsync(async x => {
+CustomerAggregateRoot.Events.AccountsCountUpdated.attachAsync(async x => {
 	console.log('CustomerAggr', 'AccountsCountUpdated', x.data);
 })

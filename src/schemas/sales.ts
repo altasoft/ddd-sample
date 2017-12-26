@@ -1,7 +1,7 @@
-import { Resolvers } from '@jokio/graphql';
+import { Resolvers, createSubscriptionEvent } from '@jokio/graphql';
 import { AppContext } from '../context/app';
-import { CustomerAggregate, AccountAggregate } from '../domain';
-
+import { CustomerAggregateRoot, AccountAggregateRoot } from '../domain';
+import { withFilter } from 'graphql-subscriptions';
 
 export const typeDefs = `
 	extend type Query {
@@ -15,6 +15,10 @@ export const typeDefs = `
 		addCustomerAccount(customerId: ID!, currency: String!): Account
 	}
 
+	extend type Subscription {
+		accountCreated: Account
+	}
+
 	type Customer {
 		id: ID!
 		name: String!
@@ -26,7 +30,6 @@ export const typeDefs = `
 		id: ID!
 		currency: String!
 		amount: Float!
-		customerId: ID!
 		customer: Customer
 	}
 `
@@ -36,23 +39,23 @@ export const typeDefs = `
 const queryResolvers: Resolvers<AppContext> = {
 	Query: {
 		customers: (obj, props, { domain }) =>
-			domain.get(CustomerAggregate).query(),
+			domain.get(CustomerAggregateRoot).query(),
 
 		customer: (obj, { id }, { domain }) =>
-			domain.get(CustomerAggregate).load(id),
+			domain.get(CustomerAggregateRoot).load(id),
 
 		accounts: (obj, props, { domain }) =>
-			domain.get(AccountAggregate).query(),
+			domain.get(AccountAggregateRoot).query(),
 	},
 
 	Customer: {
 		accounts: (obj, props, { domain }) =>
-			domain.get(AccountAggregate).query(x => x.filter('customerId', obj.id)),
+			domain.get(AccountAggregateRoot).query(x => x.filter('customerId', obj.id)),
 	},
 
 	Account: {
 		customer: (obj, props, { domain }) =>
-			domain.get(CustomerAggregate).load(obj.customerId),
+			domain.get(CustomerAggregateRoot).load(obj.customerId),
 	},
 }
 
@@ -61,15 +64,33 @@ const queryResolvers: Resolvers<AppContext> = {
 const mutationResolvers: Resolvers<AppContext> = {
 	Mutation: {
 		addCustomer: (obj, props, { domain }) =>
-			domain.get(CustomerAggregate).register(props),
+			domain.get(CustomerAggregateRoot).register(props),
 
-		addCustomerAccount: (obj, props, { domain }) =>
-			domain.get(AccountAggregate).register(props)
+		addCustomerAccount: async (obj, props, { domain, pubsub }) => {
+			const account = await domain.get(AccountAggregateRoot).register(props);
+
+			pubsub.publish('ACCOUNT_CREATED', { accountCreated: account })
+
+			return account;
+		}
 	}
 }
+
+
+// Subscription
+const subscriptionResolvers: Resolvers<AppContext> = {
+	Subscription: {
+		accountCreated: {
+			subscribe: (obj, prop, { pubsub }) =>
+				pubsub.asyncIterator('ACCOUNT_CREATED')
+		}
+	}
+}
+
 
 
 export const resolvers = {
 	...queryResolvers,
 	...mutationResolvers,
+	...subscriptionResolvers,
 }

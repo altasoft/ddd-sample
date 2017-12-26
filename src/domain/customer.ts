@@ -1,7 +1,7 @@
 import { Aggregate, Entity, DomainEvent } from "@jokio/datastore";
 
 
-export class CustomerAggregate extends Aggregate<CustomerState> {
+export class CustomerAggregateRoot extends Aggregate<CustomerState> {
 
 	static Events = {
 		Registered: new DomainEvent<RegisteredEvent>(),
@@ -32,7 +32,7 @@ export class CustomerAggregate extends Aggregate<CustomerState> {
 			accountsCount: this.state.accountsCount,
 		}
 
-		const isSuccess = await this.save(CustomerAggregate.Events.Registered, eventData)
+		const isSuccess = await this.save(CustomerAggregateRoot.Events.Registered, eventData)
 		if (!isSuccess)
 			throw new Error('Operation Failed');
 
@@ -56,13 +56,15 @@ export class CustomerAggregate extends Aggregate<CustomerState> {
 			totalCount: this.state.accountsCount,
 		}
 
-		const isSuccess = await this.save(CustomerAggregate.Events.AccountsCountUpdated, eventData);
+		const isSuccess = await this.save(CustomerAggregateRoot.Events.AccountsCountUpdated, eventData);
 		if (!isSuccess)
 			throw new Error('Operation Failed');
 
 		return this.state;
 	}
 }
+
+
 
 
 // State
