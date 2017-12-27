@@ -7,7 +7,7 @@ const {
 
 
 const credentials = datastoreConfig ? JSON.parse(datastoreConfig) : undefined;
-const db = new Datastore({ credentials });
+const db: any = new Datastore({ credentials });
 
 
 export const domain = new AggregateRootResolver(db);

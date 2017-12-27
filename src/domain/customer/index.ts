@@ -1,4 +1,5 @@
-import { AggregateRoot, Entity, DomainEvent } from "@jokio/datastore";
+import { AggregateRoot, Entity, DomainEvent, Aggregate } from "@jokio/datastore";
+import { OperationsAggregate, OperationsState } from "./operations";
 
 
 export class CustomerAggregateRoot extends AggregateRoot<CustomerState> {
@@ -6,6 +7,10 @@ export class CustomerAggregateRoot extends AggregateRoot<CustomerState> {
 	static Events = {
 		Registered: new DomainEvent<RegisteredEvent>(),
 		AccountsCountUpdated: new DomainEvent<AccountsCountUpdatedEvent>(),
+	}
+
+	protected aggregates = {
+		operations: new OperationsAggregate()
 	}
 
 
@@ -16,26 +21,31 @@ export class CustomerAggregateRoot extends AggregateRoot<CustomerState> {
 
 	register(props: RegisterProps) {
 
-		const defaultProps = {
+		const { operations } = this.aggregates;
+
+		const defaultState = {
 			id: Date.now().toString(),
 			accountsCount: 0,
+			operations: operations.defaultState,
 		}
 
 		this.state = {
-			...defaultProps,
+			...defaultState,
 			...props,
 		}
 
-		const eventData = {
+		operations.add();
+
+		return this.save(CustomerAggregateRoot.Events.Registered, {
 			id: this.state.id,
 			name: this.state.name,
 			accountsCount: this.state.accountsCount,
-		}
-
-		return this.save(CustomerAggregateRoot.Events.Registered, eventData)
+		})
 	}
 
 	updateAccountsCount(props: UpdateAccountsCountProps) {
+
+		const { operations } = this.aggregates;
 
 		switch (props.operationType) {
 			case 'add':
@@ -47,14 +57,15 @@ export class CustomerAggregateRoot extends AggregateRoot<CustomerState> {
 				break;
 		}
 
-		const eventData = {
+		operations.add();
+
+		return this.save(CustomerAggregateRoot.Events.AccountsCountUpdated, {
 			customerId: this.state.id,
 			totalCount: this.state.accountsCount,
-		}
-
-		return this.save(CustomerAggregateRoot.Events.AccountsCountUpdated, eventData);
+		});
 	}
 }
+
 
 
 
@@ -63,6 +74,7 @@ export class CustomerAggregateRoot extends AggregateRoot<CustomerState> {
 interface CustomerState extends Entity {
 	name: string
 	accountsCount: number
+	operations: OperationsState
 }
 
 
@@ -70,6 +82,7 @@ interface CustomerState extends Entity {
 interface RegisterProps {
 	name: string
 }
+
 
 interface UpdateAccountsCountProps {
 	operationType: 'add' | 'remove'

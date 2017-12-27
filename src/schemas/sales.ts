@@ -24,6 +24,11 @@ export const typeDefs = `
 		name: String!
 		accountsCount: Int!
 		accounts: [Account]
+		operations: CustomerOperations
+	}
+
+	type CustomerOperations {
+		count: Int
 	}
 
 	type Account {
