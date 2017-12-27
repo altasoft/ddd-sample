@@ -7,5 +7,4 @@ AccountAggregateRoot.Events.Registered.attach(async x => {
 
 	await customer.load(x.data.customerId);
 	await customer.updateAccountsCount({ operationType: 'add' });
-	console.log('done')
 })
