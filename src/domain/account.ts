@@ -1,8 +1,8 @@
-import { Aggregate, Entity, DomainEvent } from "@jokio/datastore";
+import { AggregateRoot, Entity, DomainEvent } from "@jokio/datastore";
 
 
 
-export class AccountAggregateRoot extends Aggregate<AccountState> {
+export class AccountAggregateRoot extends AggregateRoot<AccountState> {
 
 	static Events = {
 		Registered: new DomainEvent<RegisteredEvent>()
@@ -14,7 +14,7 @@ export class AccountAggregateRoot extends Aggregate<AccountState> {
 	}
 
 
-	async register(props: RegisterProps) {
+	register(props: RegisterProps) {
 
 		const defaultProps = {
 			id: Date.now().toString(),
@@ -31,11 +31,7 @@ export class AccountAggregateRoot extends Aggregate<AccountState> {
 			accountId: this.state.id,
 		}
 
-		const isSuccess = await this.save(AccountAggregateRoot.Events.Registered, eventData);
-		if (!isSuccess)
-			throw new Error('Operation Failed');
-
-		return this.state;
+		return this.save(AccountAggregateRoot.Events.Registered, eventData);
 	}
 }
 

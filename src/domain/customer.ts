@@ -1,7 +1,7 @@
-import { Aggregate, Entity, DomainEvent } from "@jokio/datastore";
+import { AggregateRoot, Entity, DomainEvent } from "@jokio/datastore";
 
 
-export class CustomerAggregateRoot extends Aggregate<CustomerState> {
+export class CustomerAggregateRoot extends AggregateRoot<CustomerState> {
 
 	static Events = {
 		Registered: new DomainEvent<RegisteredEvent>(),
@@ -14,7 +14,7 @@ export class CustomerAggregateRoot extends Aggregate<CustomerState> {
 	}
 
 
-	async register(props: RegisterProps) {
+	register(props: RegisterProps) {
 
 		const defaultProps = {
 			id: Date.now().toString(),
@@ -32,14 +32,10 @@ export class CustomerAggregateRoot extends Aggregate<CustomerState> {
 			accountsCount: this.state.accountsCount,
 		}
 
-		const isSuccess = await this.save(CustomerAggregateRoot.Events.Registered, eventData)
-		if (!isSuccess)
-			throw new Error('Operation Failed');
-
-		return this.state;
+		return this.save(CustomerAggregateRoot.Events.Registered, eventData)
 	}
 
-	async updateAccountsCount(props: UpdateAccountsCountProps) {
+	updateAccountsCount(props: UpdateAccountsCountProps) {
 
 		switch (props.operationType) {
 			case 'add':
@@ -56,11 +52,7 @@ export class CustomerAggregateRoot extends Aggregate<CustomerState> {
 			totalCount: this.state.accountsCount,
 		}
 
-		const isSuccess = await this.save(CustomerAggregateRoot.Events.AccountsCountUpdated, eventData);
-		if (!isSuccess)
-			throw new Error('Operation Failed');
-
-		return this.state;
+		return this.save(CustomerAggregateRoot.Events.AccountsCountUpdated, eventData);
 	}
 }
 

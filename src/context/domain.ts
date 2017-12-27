@@ -1,4 +1,4 @@
-import { Datastore, AggregateResolver } from "@jokio/datastore";
+import { Datastore, AggregateRootResolver } from "@jokio/datastore";
 
 
 const {
@@ -9,4 +9,5 @@ const {
 const credentials = datastoreConfig ? JSON.parse(datastoreConfig) : undefined;
 const db = new Datastore({ credentials });
 
-export const domain = new AggregateResolver(db);
+
+export const domain = new AggregateRootResolver(db);

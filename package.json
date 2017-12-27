@@ -21,8 +21,8 @@
 	},
 	"homepage": "https://github.com/altasoft/ddd-sample#readme",
 	"dependencies": {
-		"@jokio/datastore": "0.2.6",
-		"@jokio/graphql": "0.2.1"
+		"@jokio/datastore": "0.4.0",
+		"@jokio/graphql": "0.2.2"
 	},
 	"devDependencies": {
 		"@types/google-cloud__datastore": "^1.1.1",
